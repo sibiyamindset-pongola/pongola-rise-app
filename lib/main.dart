@@ -1,11 +1,16 @@
+
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
+
 import 'screens/auth_gate.dart';
+import 'screens/home_page.dart';
+import 'screens/login_page.dart';
+import 'screens/register_page.dart';
+import 'screens/reports_page.dart';
+import 'screens/jobs_page.dart';
+import 'screens/polls_page.dart';
+import 'screens/admin_page.dart';
 
-Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-
+void main() {
   runApp(const PongolaRiseApp());
 }
 
@@ -15,13 +20,26 @@ class PongolaRiseApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Pongola Rise',
       debugShowCheckedModeBanner: false,
+      title: 'Pongola Rise',
       theme: ThemeData(
         brightness: Brightness.dark,
         primarySwatch: Colors.green,
+        scaffoldBackgroundColor: const Color(0xFF06140A),
+        cardColor: const Color(0xFF10151C),
+        useMaterial3: true,
       ),
-      home: const AuthGate(),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => const AuthGate(),
+        '/home': (context) => const HomePage(),
+        '/login': (context) => const LoginPage(),
+        '/register': (context) => const RegisterPage(),
+        '/reports': (context) => const ReportsPage(),
+        '/jobs': (context) => const JobsPage(),
+        '/polls': (context) => const PollsPage(),
+        '/admin': (context) => const AdminPage(),
+      },
     );
   }
 }
