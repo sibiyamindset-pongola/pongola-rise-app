@@ -1,54 +1,37 @@
-/// =============================================================
-/// PONGOLA RISE V25
-/// SMART ADMIN + NOTIFICATIONS
-///
-/// NEW:
-/// ✅ Smart Admin Dashboard
-/// ✅ Report Counters
-/// ✅ Job Counters
-/// ✅ Send Notifications
-/// ✅ Announcement Center
-/// ✅ Approve / Resolve Reports
-/// ✅ Better Navigation
-///
-/// FIREBASE PACKAGES:
-/// flutter pub add firebase_core
-/// flutter pub add firebase_auth
-/// flutter pub add cloud_firestore
-/// flutter pub add firebase_messaging
-/// =============================================================
+// =============================================================
+// PONGOLA RISE V26 HYBRID
+// Clean Build + Realistic Counters + Ready For Backend
+// Replace FULL lib/main.dart with this code
+// =============================================================
 
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
-Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  runApp(const PongolaRiseV25());
+void main() {
+  runApp(const PongolaRiseApp());
 }
 
-class PongolaRiseV25 extends StatelessWidget {
-  const PongolaRiseV25({super.key});
+class PongolaRiseApp extends StatelessWidget {
+  const PongolaRiseApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: 'Pongola Rise',
       debugShowCheckedModeBanner: false,
-      title: "Pongola Rise",
-      theme: ThemeData.dark().copyWith(
-        primaryColor: Colors.green,
-        scaffoldBackgroundColor: const Color(0xFF071009),
+      theme: ThemeData(
+        brightness: Brightness.dark,
+        primarySwatch: Colors.green,
+        scaffoldBackgroundColor: const Color(0xFF06110A),
+        cardColor: const Color(0xFF0B1710),
       ),
       home: const MainShell(),
     );
   }
 }
 
-/* ============================================================
-   MAIN APP
-============================================================ */
+// =============================================================
+// MAIN SHELL
+// =============================================================
 
 class MainShell extends StatefulWidget {
   const MainShell({super.key});
@@ -58,47 +41,36 @@ class MainShell extends StatefulWidget {
 }
 
 class _MainShellState extends State<MainShell> {
-  int page = 0;
+  int index = 0;
 
-  final pages = const [
+  final List<Widget> pages = const [
     HomePage(),
     ReportsPage(),
     JobsPage(),
-    SmartAdminPage(),
-  ];
-
-  final titles = const [
-    "Home",
-    "Reports",
-    "Jobs",
-    "Admin",
+    PollsPage(),
+    AdminPage(),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(titles[page]),
-        backgroundColor: Colors.black,
-        centerTitle: true,
-      ),
-      body: pages[page],
+      body: pages[index],
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: page,
+        currentIndex: index,
+        type: BottomNavigationBarType.fixed,
         backgroundColor: Colors.black,
         selectedItemColor: Colors.greenAccent,
-        unselectedItemColor: Colors.white54,
-        onTap: (i) => setState(() => page = i),
+        unselectedItemColor: Colors.white60,
+        onTap: (v) => setState(() => index = v),
         items: const [
           BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: "Home"),
+              icon: Icon(Icons.home), label: "Home"),
           BottomNavigationBarItem(
-              icon: Icon(Icons.report),
-              label: "Reports"),
+              icon: Icon(Icons.report), label: "Reports"),
           BottomNavigationBarItem(
-              icon: Icon(Icons.work),
-              label: "Jobs"),
+              icon: Icon(Icons.work), label: "Jobs"),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.poll), label: "Polls"),
           BottomNavigationBarItem(
               icon: Icon(Icons.admin_panel_settings),
               label: "Admin"),
@@ -108,272 +80,133 @@ class _MainShellState extends State<MainShell> {
   }
 }
 
-/* ============================================================
-   HOME
-============================================================ */
+// =============================================================
+// HOME PAGE
+// =============================================================
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      padding: const EdgeInsets.all(16),
-      children: [
-        card(Icons.flag,
-            "Welcome to Pongola Rise"),
-        card(Icons.people,
-            "Serving Community"),
-        card(Icons.notifications,
-            "Updates Live"),
-      ],
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Pongola Rise"),
+        centerTitle: true,
+        backgroundColor: Colors.black,
+      ),
+      body: ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          Container(
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(24),
+              gradient: const LinearGradient(
+                colors: [Colors.green, Colors.lightGreen],
+              ),
+            ),
+            child: const Column(
+              children: [
+                Icon(Icons.flag,
+                    size: 60, color: Colors.amber),
+                SizedBox(height: 12),
+                Text(
+                  "Together We Rise",
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  "Truth • Service • Progress",
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.white70,
+                  ),
+                )
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+
+          // REALISTIC COUNTERS
+          GridView.count(
+            crossAxisCount: 2,
+            shrinkWrap: true,
+            physics:
+                const NeverScrollableScrollPhysics(),
+            crossAxisSpacing: 12,
+            mainAxisSpacing: 12,
+            childAspectRatio: 1.2,
+            children: const [
+              StatCard(
+                  icon: Icons.report,
+                  title: "Reports",
+                  value: "5"),
+              StatCard(
+                  icon: Icons.work,
+                  title: "Jobs",
+                  value: "2"),
+              StatCard(
+                  icon: Icons.people,
+                  title: "Members",
+                  value: "18"),
+              StatCard(
+                  icon: Icons.event,
+                  title: "Meetings",
+                  value: "3"),
+            ],
+          ),
+
+          const SizedBox(height: 16),
+
+          const SectionTitle("Latest Activity"),
+
+          infoTile(Icons.water_drop,
+              "Water issue reported in Ward 4"),
+          infoTile(Icons.work,
+              "2 new jobs posted today"),
+          infoTile(Icons.campaign,
+              "Community meeting Saturday"),
+        ],
+      ),
     );
   }
 }
 
-/* ============================================================
-   REPORTS PAGE
-============================================================ */
+// =============================================================
+// REPORTS
+// =============================================================
 
 class ReportsPage extends StatelessWidget {
   const ReportsPage({super.key});
 
-  Future<void> setStatus(
-      String id, String status) async {
-    await FirebaseFirestore.instance
-        .collection("reports")
-        .doc(id)
-        .update({"status": status});
-  }
-
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance
-          .collection("reports")
-          .snapshots(),
-      builder: (context, snap) {
-        if (!snap.hasData) {
-          return loader();
-        }
+    final reports = [
+      "Street light not working",
+      "Water leak near school",
+      "Road pothole main road",
+      "Illegal dumping area",
+      "Clinic queue complaint",
+    ];
 
-        return ListView(
-          padding: const EdgeInsets.all(16),
-          children: snap.data!.docs.map((doc) {
-            final data =
-                doc.data() as Map<String,
-                    dynamic>;
-
-            return Card(
-              child: ListTile(
-                title:
-                    Text(data["issue"]),
-                subtitle:
-                    Text(data["status"]),
-                trailing: PopupMenuButton(
-                  itemBuilder: (_) => [
-                    const PopupMenuItem(
-                      value: "Pending",
-                      child:
-                          Text("Pending"),
-                    ),
-                    const PopupMenuItem(
-                      value:
-                          "Approved",
-                      child:
-                          Text("Approved"),
-                    ),
-                    const PopupMenuItem(
-                      value:
-                          "Resolved",
-                      child:
-                          Text("Resolved"),
-                    ),
-                  ],
-                  onSelected: (value) =>
-                      setStatus(
-                    doc.id,
-                    value.toString(),
-                  ),
-                ),
-              ),
-            );
-          }).toList(),
-        );
-      },
-    );
-  }
-}
-
-/* ============================================================
-   JOBS PAGE
-============================================================ */
-
-class JobsPage extends StatelessWidget {
-  const JobsPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance
-          .collection("jobs")
-          .snapshots(),
-      builder: (context, snap) {
-        if (!snap.hasData) {
-          return loader();
-        }
-
-        return ListView(
-          padding: const EdgeInsets.all(16),
-          children: snap.data!.docs.map((doc) {
-            final data =
-                doc.data() as Map<String,
-                    dynamic>;
-
-            return Card(
-              child: ListTile(
-                leading:
-                    const Icon(Icons.work),
-                title:
-                    Text(data["title"]),
-                subtitle: Text(
-                    data["company"]),
-              ),
-            );
-          }).toList(),
-        );
-      },
-    );
-  }
-}
-
-/* ============================================================
-   SMART ADMIN PAGE
-============================================================ */
-
-class SmartAdminPage extends StatefulWidget {
-  const SmartAdminPage({super.key});
-
-  @override
-  State<SmartAdminPage> createState() =>
-      _SmartAdminPageState();
-}
-
-class _SmartAdminPageState
-    extends State<SmartAdminPage> {
-  final note =
-      TextEditingController();
-
-  Future<void> sendNotice() async {
-    await FirebaseFirestore.instance
-        .collection(
-            "announcements")
-        .add({
-      "message": note.text,
-      "time": DateTime.now(),
-    });
-
-    note.clear();
-  }
-
-  Future<int> countDocs(
-      String collection) async {
-    final snap =
-        await FirebaseFirestore
-            .instance
-            .collection(collection)
-            .get();
-
-    return snap.docs.length;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder<List<int>>(
-      future: Future.wait([
-        countDocs("reports"),
-        countDocs("jobs"),
-        countDocs("users"),
-      ]),
-      builder: (context, snap) {
-        if (!snap.hasData) {
-          return loader();
-        }
-
-        final reports =
-            snap.data![0];
-        final jobs = snap.data![1];
-        final users =
-            snap.data![2];
-
-        return ListView(
-          padding:
-              const EdgeInsets.all(16),
-          children: [
-            const Text(
-              "Smart Admin Dashboard",
-              style: TextStyle(
-                fontSize: 24,
-              ),
-            ),
-            gap(),
-
-            statCard(
-                "Reports",
-                reports.toString(),
-                Icons.report),
-
-            statCard(
-                "Jobs",
-                jobs.toString(),
-                Icons.work),
-
-            statCard(
-                "Users",
-                users.toString(),
-                Icons.people),
-
-            gap(),
-            const Divider(),
-
-            const Text(
-              "Send Notification",
-              style: TextStyle(
-                fontSize: 22,
-              ),
-            ),
-            gap(),
-
-            field(note,
-                "Write message"),
-
-            gap(),
-
-            button(
-              "Send Announcement",
-              sendNotice,
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Widget statCard(
-    String title,
-    String value,
-    IconData icon,
-  ) {
-    return Card(
-      child: ListTile(
-        leading: Icon(icon,
-            color: Colors.green),
-        title: Text(title),
-        trailing: Text(
-          value,
-          style:
-              const TextStyle(
-            fontSize: 22,
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Community Reports"),
+        backgroundColor: Colors.black,
+      ),
+      body: ListView.builder(
+        itemCount: reports.length,
+        itemBuilder: (_, i) => Card(
+          child: ListTile(
+            leading: const Icon(Icons.warning,
+                color: Colors.orange),
+            title: Text(reports[i]),
+            subtitle: const Text("Pending review"),
           ),
         ),
       ),
@@ -381,62 +214,238 @@ class _SmartAdminPageState
   }
 }
 
-/* ============================================================
-   REUSABLE
-============================================================ */
+// =============================================================
+// JOBS
+// =============================================================
 
-Widget card(
-    IconData icon,
-    String text) {
+class JobsPage extends StatelessWidget {
+  const JobsPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final jobs = [
+      "General Worker - Municipality",
+      "Cashier - Local Shop",
+      "Security Guard - Private Firm",
+      "Cleaner - School",
+    ];
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Jobs Board"),
+        backgroundColor: Colors.black,
+      ),
+      body: ListView.builder(
+        itemCount: jobs.length,
+        itemBuilder: (_, i) => Card(
+          child: ListTile(
+            leading: const Icon(Icons.work,
+                color: Colors.greenAccent),
+            title: Text(jobs[i]),
+            trailing:
+                const Icon(Icons.arrow_forward_ios),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// =============================================================
+// POLLS
+// =============================================================
+
+class PollsPage extends StatefulWidget {
+  const PollsPage({super.key});
+
+  @override
+  State<PollsPage> createState() =>
+      _PollsPageState();
+}
+
+class _PollsPageState extends State<PollsPage> {
+  int selected = -1;
+
+  final options = [
+    "Jobs Creation",
+    "Water Supply",
+    "Road Repairs",
+    "Youth Programs"
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Community Poll"),
+        backgroundColor: Colors.black,
+      ),
+      body: ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          const Text(
+            "What should be priority?",
+            style: TextStyle(fontSize: 22),
+          ),
+          const SizedBox(height: 16),
+          ...List.generate(
+            options.length,
+            (i) => RadioListTile(
+              value: i,
+              groupValue: selected,
+              title: Text(options[i]),
+              onChanged: (v) {
+                setState(() {
+                  selected = i;
+                });
+              },
+            ),
+          ),
+          const SizedBox(height: 16),
+          ElevatedButton(
+            onPressed: () {},
+            child: const Text("Submit Vote"),
+          )
+        ],
+      ),
+    );
+  }
+}
+
+// =============================================================
+// ADMIN
+// =============================================================
+
+class AdminPage extends StatefulWidget {
+  const AdminPage({super.key});
+
+  @override
+  State<AdminPage> createState() =>
+      _AdminPageState();
+}
+
+class _AdminPageState extends State<AdminPage> {
+  final controller = TextEditingController();
+
+  final List<String> notices = [];
+
+  void postNotice() {
+    if (controller.text.trim().isEmpty) return;
+
+    setState(() {
+      notices.insert(0, controller.text.trim());
+      controller.clear();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Smart Admin"),
+        backgroundColor: Colors.black,
+      ),
+      body: ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          const SectionTitle("Post Notice"),
+          TextField(
+            controller: controller,
+            decoration: const InputDecoration(
+              hintText: "Write update...",
+            ),
+          ),
+          const SizedBox(height: 12),
+          ElevatedButton(
+            onPressed: postNotice,
+            child: const Text("Publish"),
+          ),
+          const SizedBox(height: 18),
+          const SectionTitle("Announcements"),
+          ...notices.map(
+            (e) => Card(
+              child: ListTile(
+                leading: const Icon(
+                    Icons.notifications,
+                    color: Colors.amber),
+                title: Text(e),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// =============================================================
+// REUSABLE
+// =============================================================
+
+class StatCard extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String value;
+
+  const StatCard({
+    super.key,
+    required this.icon,
+    required this.title,
+    required this.value,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: const Color(0xFF0B1710),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Column(
+        mainAxisAlignment:
+            MainAxisAlignment.center,
+        children: [
+          Icon(icon,
+              size: 34, color: Colors.amber),
+          const SizedBox(height: 10),
+          Text(
+            value,
+            style: const TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          Text(title),
+        ],
+      ),
+    );
+  }
+}
+
+class SectionTitle extends StatelessWidget {
+  final String text;
+
+  const SectionTitle(this.text,
+      {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text,
+      style: const TextStyle(
+        fontSize: 22,
+        fontWeight: FontWeight.bold,
+      ),
+    );
+  }
+}
+
+Widget infoTile(IconData icon, String title) {
   return Card(
     child: ListTile(
-      leading: Icon(icon,
-          color: Colors.green),
-      title: Text(text),
+      leading:
+          Icon(icon, color: Colors.greenAccent),
+      title: Text(title),
     ),
   );
 }
-
-Widget field(
-    TextEditingController c,
-    String hint) {
-  return TextField(
-    controller: c,
-    decoration: InputDecoration(
-      hintText: hint,
-      border: OutlineInputBorder(
-        borderRadius:
-            BorderRadius.circular(
-                14),
-      ),
-    ),
-  );
-}
-
-Widget button(
-  String text,
-  VoidCallback fn,
-) {
-  return ElevatedButton(
-    style: ElevatedButton.styleFrom(
-      backgroundColor:
-          Colors.green,
-      minimumSize:
-          const Size(
-              double.infinity,
-              50),
-    ),
-    onPressed: fn,
-    child: Text(text),
-  );
-}
-
-Widget loader() {
-  return const Center(
-    child:
-        CircularProgressIndicator(),
-  );
-}
-
-Widget gap() =>
-    const SizedBox(height: 12);
