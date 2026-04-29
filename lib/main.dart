@@ -441,7 +441,7 @@ class SectionTitle extends StatelessWidget {
 }
 
 Widget infoTile(IconData icon, String title) {
-  return Card(
+   Card(
     child: ListTile(
       leading:
           Icon(icon, color: Colors.greenAccent),
