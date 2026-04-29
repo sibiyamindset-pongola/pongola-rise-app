@@ -1,19 +1,34 @@
-name: pongola_rise_app
-description: Official Pongola Rise community empowerment mobile app
+name: pongola_rise
+description: Real community platform for Pongola
+
 publish_to: 'none'
 
 version: 1.0.0+1
 
 environment:
-  sdk: ">=3.1.0 <4.0.0"
+  sdk: ">=3.3.0 <4.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
 
+  cupertino_icons: ^1.0.8
+
+  firebase_core: ^3.6.0
+  firebase_auth: ^5.3.1
+  cloud_firestore: ^5.4.4
+  firebase_storage: ^12.3.4
+  firebase_messaging: ^15.1.3
+
+  image_picker: ^1.1.2
+  shared_preferences: ^2.3.2
+  intl: ^0.19.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+  flutter_lints: ^4.0.0
 
 flutter:
   uses-material-design: true
