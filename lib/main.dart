@@ -1,28 +1,54 @@
-import 'package:flutter/material.dart';
+/// =============================================================
+/// PONGOLA RISE V25
+/// SMART ADMIN + NOTIFICATIONS
+///
+/// NEW:
+/// ✅ Smart Admin Dashboard
+/// ✅ Report Counters
+/// ✅ Job Counters
+/// ✅ Send Notifications
+/// ✅ Announcement Center
+/// ✅ Approve / Resolve Reports
+/// ✅ Better Navigation
+///
+/// FIREBASE PACKAGES:
+/// flutter pub add firebase_core
+/// flutter pub add firebase_auth
+/// flutter pub add cloud_firestore
+/// flutter pub add firebase_messaging
+/// =============================================================
 
-void main() {
-  runApp(const PongolaRiseV120());
+import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(const PongolaRiseV25());
 }
 
-class PongolaRiseV120 extends StatelessWidget {
-  const PongolaRiseV120({super.key});
+class PongolaRiseV25 extends StatelessWidget {
+  const PongolaRiseV25({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Pongola Rise V12.0',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        useMaterial3: true,
-        brightness: Brightness.dark,
-        colorSchemeSeed: Colors.green,
-        scaffoldBackgroundColor: const Color(0xFF03070B),
-        fontFamily: 'Arial',
+      title: "Pongola Rise",
+      theme: ThemeData.dark().copyWith(
+        primaryColor: Colors.green,
+        scaffoldBackgroundColor: const Color(0xFF071009),
       ),
       home: const MainShell(),
     );
   }
 }
+
+/* ============================================================
+   MAIN APP
+============================================================ */
 
 class MainShell extends StatefulWidget {
   const MainShell({super.key});
@@ -32,448 +58,385 @@ class MainShell extends StatefulWidget {
 }
 
 class _MainShellState extends State<MainShell> {
-  int index = 0;
+  int page = 0;
 
-  final List<Widget> pages = const [
-    DashboardPage(),
+  final pages = const [
+    HomePage(),
     ReportsPage(),
     JobsPage(),
-    PollsPage(),
-    LeaderPage(),
+    SmartAdminPage(),
   ];
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: pages[index],
-
-      floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: Colors.green,
-        icon: const Icon(Icons.campaign),
-        label: const Text("Join Now"),
-        onPressed: () {},
-      ),
-
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: index,
-        onDestinationSelected: (v) {
-          setState(() => index = v);
-        },
-        destinations: const [
-          NavigationDestination(
-            icon: Icon(Icons.dashboard_outlined),
-            selectedIcon: Icon(Icons.dashboard),
-            label: "Home",
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.report_outlined),
-            selectedIcon: Icon(Icons.report),
-            label: "Reports",
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.work_outline),
-            selectedIcon: Icon(Icons.work),
-            label: "Jobs",
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.poll_outlined),
-            selectedIcon: Icon(Icons.poll),
-            label: "Polls",
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.person_outline),
-            selectedIcon: Icon(Icons.person),
-            label: "Leader",
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class PageWrap extends StatelessWidget {
-  final String title;
-  final Widget child;
-
-  const PageWrap({
-    super.key,
-    required this.title,
-    required this.child,
-  });
+  final titles = const [
+    "Home",
+    "Reports",
+    "Jobs",
+    "Admin",
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: Text(titles[page]),
+        backgroundColor: Colors.black,
         centerTitle: true,
-        elevation: 0,
       ),
-      body: child,
-    );
-  }
-}
-
-class NeoCard extends StatelessWidget {
-  final Widget child;
-
-  const NeoCard({
-    super.key,
-    required this.child,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      color: const Color(0xFF0F1720),
-      elevation: 12,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(30),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: child,
-      ),
-    );
-  }
-}
-
-class DashboardPage extends StatelessWidget {
-  const DashboardPage({super.key});
-
-  Widget stat(String number, String label, IconData icon) {
-    return Expanded(
-      child: NeoCard(
-        child: Column(
-          children: [
-            Icon(icon, color: Colors.amber, size: 30),
-            const SizedBox(height: 8),
-            Text(
-              number,
-              style: const TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-            Text(
-              label,
-              textAlign: TextAlign.center,
-              style: const TextStyle(color: Colors.white70),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget menu(String title, IconData icon) {
-    return NeoCard(
-      child: ListTile(
-        contentPadding: EdgeInsets.zero,
-        leading: Icon(icon, color: Colors.greenAccent),
-        title: Text(
-          title,
-          style: const TextStyle(color: Colors.white),
-        ),
-        trailing: const Icon(
-          Icons.arrow_forward_ios,
-          size: 16,
-          color: Colors.white54,
-        ),
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return PageWrap(
-      title: "Pongola Rise",
-      child: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          Container(
-            padding: const EdgeInsets.all(32),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(34),
-              gradient: LinearGradient(
-                colors: [
-                  Colors.green.shade900,
-                  Colors.green.shade700,
-                  Colors.green.shade500,
-                ],
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.green.withOpacity(0.35),
-                  blurRadius: 30,
-                ),
-              ],
-            ),
-            child: const Column(
-              children: [
-                Icon(Icons.flag, size: 76, color: Colors.amber),
-                SizedBox(height: 12),
-                Text(
-                  "Together We Rise",
-                  style: TextStyle(
-                    fontSize: 33,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-                SizedBox(height: 8),
-                Text(
-                  "Unity • Jobs • Real Change",
-                  style: TextStyle(color: Colors.white70),
-                ),
-              ],
-            ),
-          ),
-
-          const SizedBox(height: 18),
-
-          Row(
-            children: [
-              stat("680", "Reports", Icons.report),
-              const SizedBox(width: 10),
-              stat("311", "Jobs", Icons.work),
-            ],
-          ),
-
-          const SizedBox(height: 10),
-
-          Row(
-            children: [
-              stat("3.4K", "Supporters", Icons.group),
-              const SizedBox(width: 10),
-              stat("126", "Events", Icons.event),
-            ],
-          ),
-
-          const SizedBox(height: 18),
-
-          menu("Emergency Water Reports", Icons.water_drop),
-          menu("Road Repair Requests", Icons.traffic),
-          menu("Youth Opportunities", Icons.school),
-          menu("Volunteer Registration", Icons.how_to_reg),
-          menu("Community News", Icons.newspaper),
-          menu("Safety Alerts", Icons.security),
-          menu("Ward Meetings", Icons.groups),
-          menu("Business Support", Icons.store),
-          menu("Live Dashboard", Icons.bar_chart),
+      body: pages[page],
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: page,
+        backgroundColor: Colors.black,
+        selectedItemColor: Colors.greenAccent,
+        unselectedItemColor: Colors.white54,
+        onTap: (i) => setState(() => page = i),
+        items: const [
+          BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: "Home"),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.report),
+              label: "Reports"),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.work),
+              label: "Jobs"),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.admin_panel_settings),
+              label: "Admin"),
         ],
       ),
     );
   }
 }
+
+/* ============================================================
+   HOME
+============================================================ */
+
+class HomePage extends StatelessWidget {
+  const HomePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        card(Icons.flag,
+            "Welcome to Pongola Rise"),
+        card(Icons.people,
+            "Serving Community"),
+        card(Icons.notifications,
+            "Updates Live"),
+      ],
+    );
+  }
+}
+
+/* ============================================================
+   REPORTS PAGE
+============================================================ */
 
 class ReportsPage extends StatelessWidget {
   const ReportsPage({super.key});
 
-  Widget item(String title, IconData icon) {
-    return NeoCard(
-      child: ListTile(
-        contentPadding: EdgeInsets.zero,
-        leading: Icon(icon, color: Colors.redAccent),
-        title: Text(
-          title,
-          style: const TextStyle(color: Colors.white),
-        ),
-        subtitle: const Text(
-          "Tap to submit issue",
-          style: TextStyle(color: Colors.white54),
-        ),
-      ),
-    );
+  Future<void> setStatus(
+      String id, String status) async {
+    await FirebaseFirestore.instance
+        .collection("reports")
+        .doc(id)
+        .update({"status": status});
   }
 
   @override
   Widget build(BuildContext context) {
-    return PageWrap(
-      title: "Reports Centre",
-      child: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          item("Water Outage", Icons.water_drop),
-          item("Electricity Fault", Icons.flash_on),
-          item("Road Damage", Icons.traffic),
-          item("Waste Collection", Icons.delete),
-          item("Crime Concern", Icons.security),
-          item("Corruption Report", Icons.warning),
-          item("Clinic Complaint", Icons.local_hospital),
-          item("School Issue", Icons.school),
-          item("Street Light Fault", Icons.lightbulb),
-          item("Broken Sewer Line", Icons.plumbing),
-          item("Storm Damage", Icons.cloud),
-          item("Bridge Damage", Icons.construction),
-        ],
-      ),
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance
+          .collection("reports")
+          .snapshots(),
+      builder: (context, snap) {
+        if (!snap.hasData) {
+          return loader();
+        }
+
+        return ListView(
+          padding: const EdgeInsets.all(16),
+          children: snap.data!.docs.map((doc) {
+            final data =
+                doc.data() as Map<String,
+                    dynamic>;
+
+            return Card(
+              child: ListTile(
+                title:
+                    Text(data["issue"]),
+                subtitle:
+                    Text(data["status"]),
+                trailing: PopupMenuButton(
+                  itemBuilder: (_) => [
+                    const PopupMenuItem(
+                      value: "Pending",
+                      child:
+                          Text("Pending"),
+                    ),
+                    const PopupMenuItem(
+                      value:
+                          "Approved",
+                      child:
+                          Text("Approved"),
+                    ),
+                    const PopupMenuItem(
+                      value:
+                          "Resolved",
+                      child:
+                          Text("Resolved"),
+                    ),
+                  ],
+                  onSelected: (value) =>
+                      setStatus(
+                    doc.id,
+                    value.toString(),
+                  ),
+                ),
+              ),
+            );
+          }).toList(),
+        );
+      },
     );
   }
 }
+
+/* ============================================================
+   JOBS PAGE
+============================================================ */
 
 class JobsPage extends StatelessWidget {
   const JobsPage({super.key});
 
-  Widget job(String title, String type) {
-    return NeoCard(
-      child: ListTile(
-        contentPadding: EdgeInsets.zero,
-        leading: const Icon(Icons.work, color: Colors.greenAccent),
-        title: Text(
-          title,
-          style: const TextStyle(color: Colors.white),
-        ),
-        subtitle: Text(
-          type,
-          style: const TextStyle(color: Colors.white60),
-        ),
-        trailing: const Icon(Icons.open_in_new, color: Colors.white54),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    return PageWrap(
-      title: "Jobs & Growth",
-      child: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          job("Municipal Internship Program", "Youth"),
-          job("EPWP Worker Intake", "Temporary"),
-          job("Business Startup Grants", "Entrepreneurs"),
-          job("Bursary Applications", "Students"),
-          job("Skills Training Bootcamp", "Community"),
-          job("Security Vacancies", "Private Sector"),
-          job("Retail Vacancies", "Private Sector"),
-          job("Driver Positions", "Transport"),
-          job("Admin Clerk Posts", "Office"),
-          job("Farm Opportunities", "Agriculture"),
-          job("Tourism Vacancies", "Hospitality"),
-          job("Construction Jobs", "Projects"),
-        ],
-      ),
-    );
-  }
-}
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance
+          .collection("jobs")
+          .snapshots(),
+      builder: (context, snap) {
+        if (!snap.hasData) {
+          return loader();
+        }
 
-class PollsPage extends StatefulWidget {
-  const PollsPage({super.key});
+        return ListView(
+          padding: const EdgeInsets.all(16),
+          children: snap.data!.docs.map((doc) {
+            final data =
+                doc.data() as Map<String,
+                    dynamic>;
 
-  @override
-  State<PollsPage> createState() => _PollsPageState();
-}
-
-class _PollsPageState extends State<PollsPage> {
-  int selected = -1;
-
-  final options = [
-    "Jobs Creation",
-    "Road Repairs",
-    "Water Reliability",
-    "Youth Development",
-    "Safety & Crime",
-    "Clean Governance",
-    "Business Growth",
-    "Healthcare",
-    "Housing",
-    "Education",
-    "Tourism",
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    return PageWrap(
-      title: "Community Polls",
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: NeoCard(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                "What is Pongola's top priority?",
-                style: TextStyle(
-                  fontSize: 22,
-                  color: Colors.white,
-                ),
+            return Card(
+              child: ListTile(
+                leading:
+                    const Icon(Icons.work),
+                title:
+                    Text(data["title"]),
+                subtitle: Text(
+                    data["company"]),
               ),
-              const SizedBox(height: 12),
-              ...List.generate(
-                options.length,
-                (i) => RadioListTile<int>(
-                  value: i,
-                  groupValue: selected,
-                  activeColor: Colors.green,
-                  title: Text(
-                    options[i],
-                    style: const TextStyle(color: Colors.white),
-                  ),
-                  onChanged: (v) {
-                    setState(() => selected = v!);
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+            );
+          }).toList(),
+        );
+      },
     );
   }
 }
 
-class LeaderPage extends StatelessWidget {
-  const LeaderPage({super.key});
+/* ============================================================
+   SMART ADMIN PAGE
+============================================================ */
+
+class SmartAdminPage extends StatefulWidget {
+  const SmartAdminPage({super.key});
+
+  @override
+  State<SmartAdminPage> createState() =>
+      _SmartAdminPageState();
+}
+
+class _SmartAdminPageState
+    extends State<SmartAdminPage> {
+  final note =
+      TextEditingController();
+
+  Future<void> sendNotice() async {
+    await FirebaseFirestore.instance
+        .collection(
+            "announcements")
+        .add({
+      "message": note.text,
+      "time": DateTime.now(),
+    });
+
+    note.clear();
+  }
+
+  Future<int> countDocs(
+      String collection) async {
+    final snap =
+        await FirebaseFirestore
+            .instance
+            .collection(collection)
+            .get();
+
+    return snap.docs.length;
+  }
 
   @override
   Widget build(BuildContext context) {
-    return PageWrap(
-      title: "Leadership",
-      child: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: NeoCard(
-            child: const Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                CircleAvatar(
-                  radius: 54,
-                  backgroundColor: Colors.green,
-                  child: Icon(
-                    Icons.person,
-                    size: 58,
-                    color: Colors.white,
-                  ),
-                ),
-                SizedBox(height: 14),
-                Text(
-                  "Independent Candidate",
-                  style: TextStyle(
-                    fontSize: 26,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-                SizedBox(height: 10),
-                Text(
-                  "Committed to honest leadership, jobs, youth empowerment, housing, education, business growth, and safe communities.",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.white70,
-                  ),
-                ),
-                SizedBox(height: 14),
-                Chip(
-                  label: Text("Power to the People"),
-                ),
-              ],
+    return FutureBuilder<List<int>>(
+      future: Future.wait([
+        countDocs("reports"),
+        countDocs("jobs"),
+        countDocs("users"),
+      ]),
+      builder: (context, snap) {
+        if (!snap.hasData) {
+          return loader();
+        }
+
+        final reports =
+            snap.data![0];
+        final jobs = snap.data![1];
+        final users =
+            snap.data![2];
+
+        return ListView(
+          padding:
+              const EdgeInsets.all(16),
+          children: [
+            const Text(
+              "Smart Admin Dashboard",
+              style: TextStyle(
+                fontSize: 24,
+              ),
             ),
+            gap(),
+
+            statCard(
+                "Reports",
+                reports.toString(),
+                Icons.report),
+
+            statCard(
+                "Jobs",
+                jobs.toString(),
+                Icons.work),
+
+            statCard(
+                "Users",
+                users.toString(),
+                Icons.people),
+
+            gap(),
+            const Divider(),
+
+            const Text(
+              "Send Notification",
+              style: TextStyle(
+                fontSize: 22,
+              ),
+            ),
+            gap(),
+
+            field(note,
+                "Write message"),
+
+            gap(),
+
+            button(
+              "Send Announcement",
+              sendNotice,
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget statCard(
+    String title,
+    String value,
+    IconData icon,
+  ) {
+    return Card(
+      child: ListTile(
+        leading: Icon(icon,
+            color: Colors.green),
+        title: Text(title),
+        trailing: Text(
+          value,
+          style:
+              const TextStyle(
+            fontSize: 22,
           ),
         ),
       ),
     );
   }
 }
+
+/* ============================================================
+   REUSABLE
+============================================================ */
+
+Widget card(
+    IconData icon,
+    String text) {
+  return Card(
+    child: ListTile(
+      leading: Icon(icon,
+          color: Colors.green),
+      title: Text(text),
+    ),
+  );
+}
+
+Widget field(
+    TextEditingController c,
+    String hint) {
+  return TextField(
+    controller: c,
+    decoration: InputDecoration(
+      hintText: hint,
+      border: OutlineInputBorder(
+        borderRadius:
+            BorderRadius.circular(
+                14),
+      ),
+    ),
+  );
+}
+
+Widget button(
+  String text,
+  VoidCallback fn,
+) {
+  return ElevatedButton(
+    style: ElevatedButton.styleFrom(
+      backgroundColor:
+          Colors.green,
+      minimumSize:
+          const Size(
+              double.infinity,
+              50),
+    ),
+    onPressed: fn,
+    child: Text(text),
+  );
+}
+
+Widget loader() {
+  return const Center(
+    child:
+        CircularProgressIndicator(),
+  );
+}
+
+Widget gap() =>
+    const SizedBox(height: 12);
